@@ -54,10 +54,19 @@ var winVals = map[osVarType]string{
 // in the apropriate map, based on the series. This will
 // help reduce boilerplate code
 func osVal(ser string, valname osVarType) (string, error) {
-	os, err := series.GetOSFromSeries(ser)
-	if err != nil {
-		return "", err
+	var (
+		os  = jujuos.Unknown
+		err error
+	)
+	if ser != series.Unknown {
+		os, err = series.GetOSFromSeries(ser)
+		if err != nil {
+			return "", err
+		}
+	} else {
+		os = jujuos.HostOS()
 	}
+
 	switch os {
 	case jujuos.Windows:
 		return winVals[valname], nil
